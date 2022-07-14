@@ -21,6 +21,11 @@ var routers = [
                 path:'/user',
                 name:'user',
                 component: ()=> import('../views/User')
+            },
+            {
+                path:'developers',
+                name:'developers',
+                component:()=>import('../views/Developers')
             }
         ]
     },

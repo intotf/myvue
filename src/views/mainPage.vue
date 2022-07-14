@@ -7,6 +7,7 @@
             <el-header>
               <head-menus></head-menus>
             </el-header>
+            <common-tag></common-tag>
             <el-main>
               <router-view></router-view>
             </el-main>
@@ -19,7 +20,7 @@
     background-color: #308275;
 }
 .el-main {
- background-color: rgb(216, 216, 216);
+ background-color: #FEFEFE;
  padding: 10px;
 }
 .el-aside{
@@ -29,11 +30,13 @@
 
 <script>
 import LeftMenus from '../components/LeftMenus.vue'
-import HeadMenus from '../components/HeadMenus.vue';
+import HeadMenus from '../components/HeadMenus.vue'
+import CommonTag from '../components/CommonTag.vue'
   export default {
     components:{
       LeftMenus,
-      HeadMenus
+      HeadMenus,
+      CommonTag
     },
     methods: {
       handleOpen(key, keyPath) {
