@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { getAdminToken,getAdminMenu } from '../api/tokenApi.js'
+import { getAdminToken } from '../api/tokenApi.js'
 export default ({
     name:'loginPage',
     data() {
@@ -41,10 +41,6 @@ export default ({
                     // 发送 POST 请求
                     getAdminToken(this.form).then(res=>{
                         this.$store.commit('setToken',res.data.data.access_token)
-                        getAdminMenu().then(res=>{
-                            this.$store.commit('setMenu',res.data);
-                            this.$store.commit('addMenu',this.$router);
-                        })
                         this.$router.push({name:'home'})
                     })
                 }

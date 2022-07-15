@@ -20,13 +20,53 @@ var routers = [
             {
                 path:'/user',
                 name:'user',
-                component: ()=> import('../views/User')
+                component: ()=> import('../views/User'),
+                meta: {
+                    title: '管理员',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
             },
             {
-                path:'developers',
+                path:'/developers',
                 name:'developers',
-                component:()=>import('../views/Developers')
-            }
+                component:()=>import('../views/Developers'),
+                meta: {
+                    title: '开发者',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
+            {
+                path:'/functions',
+                name:'functions',
+                component:()=>import('../views/Functions'),
+                meta: {
+                    title: '功能管理',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
+            {
+                path:'/functionapps',
+                name:'functionapps',
+                component:()=>import('../views/FunctionApps'),
+                meta: {
+                    title: '应用管理',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
+            {
+                path:'/functionapplicenses',
+                name:'functionapplicenses',
+                component:()=>import('../views/FunctionAppLicenses'),
+                meta: {
+                    title: '授权记录',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
         ]
     },
     {

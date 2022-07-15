@@ -8,9 +8,11 @@
               <head-menus></head-menus>
             </el-header>
             <common-tag></common-tag>
-            <el-main>
-              <router-view></router-view>
-            </el-main>
+              <el-main>
+                <keep-alive>
+                  <router-view></router-view>
+                </keep-alive>
+              </el-main>
         </el-container>
     </el-container>
 </template>
@@ -37,14 +39,6 @@ import CommonTag from '../components/CommonTag.vue'
       LeftMenus,
       HeadMenus,
       CommonTag
-    },
-    methods: {
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      }
     }
   }
 </script>

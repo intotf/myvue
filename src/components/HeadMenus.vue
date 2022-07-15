@@ -52,7 +52,6 @@ export default ({
     methods:{
       handCollapse() {
         this.$store.commit('collapseMenu')
-        //bus.$emit('handCollapse')
       },
       loginOut(){
          this.$confirm('是否确定退出当前登录', '退出提示', {

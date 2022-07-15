@@ -25,7 +25,6 @@ export default {
             } else {
                 state.currentMenu = null
             }
-            console.log(state.tabList)
         },
         closeTag(state,val){
            const result = state.tabList.findIndex(item=> item.name === val.name)

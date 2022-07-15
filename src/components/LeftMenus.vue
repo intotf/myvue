@@ -1,5 +1,5 @@
 <template>
-    <el-menu default-active="1-4-1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#FFd04b" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
+    <el-menu default-active="1-4-1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff" active-text-color="#FFd04b" :collapse="isCollapse">
       <h3>{{isCollapse ? '后台' : '后台管理系统'}}</h3>
       <el-submenu v-for="item in menus" :index="item.name" :key="item.name">
           <template slot="title">
@@ -31,24 +31,15 @@
 </style>
 
 <script>
-  //import bus from  '../scripts/eventBus'
+  import { getAdminMenu } from '../api/tokenApi.js'
   export default {
     data() {
       return {
+        menus:[]
       }
     },
     methods: {
-      handleOpen(key, keyPath) {
-        
-      },
-      handleClose(key, keyPath) {
-        
-      },
-      handCollapse(){
-         this.isCollapse = !this.isCollapse;
-      },
       chlickMenu(item){
-          console.log(item.name)
           this.$store.commit('selectMenu',item)
           this.$router.push({
             name:item.name
@@ -56,18 +47,34 @@
       }
     },
     mounted(){
-      // bus.$on("handCollapse",()=> {
-      //       this.isCollapse = !this.isCollapse
-      // });
+       // 发送 POST 请求
+      getAdminMenu().then(res=>{
+          const menusArray = [];
+          res.data.data.forEach(item => {
+            const itemArray = [];
+            if(item.items){
+                itemArray.childre = item.items.map((it)=> {
+                    return {
+                        groupName : it.groupName,
+                        name : it.path,
+                        label : it.name,
+                        path: '/'+it.path
+                    }
+                })
+                itemArray.groupName = item.group
+                itemArray.name = item.path
+                itemArray.label = item.group
+                itemArray.path = '/'+item.path
+            }
+            menusArray.push(itemArray);
+          })
+          this.menus = menusArray;
+      })
     },
     computed:{
-        menus(){
-         this.$store.commit('getMenu')
-          return this.$store.state.token.menus;
-        },
         isCollapse(){
           return this.$store.state.tab.isCollapse
         }
-  }
+    }
 }
 </script>

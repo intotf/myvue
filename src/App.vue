@@ -6,7 +6,7 @@
 
 <script>
 //import HelloWorld from './components/HelloWorld.vue'
-
+import baseCss from './assets/base.css'
 export default {
   name: 'App',
   // components: {

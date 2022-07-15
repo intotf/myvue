@@ -11,8 +11,8 @@ import http from 'axios'
 Vue.prototype.$http = http
 Vue.prototype.$config = ElementUI.MessageBox.confirm
 Vue.prototype.$message = ElementUI.Message
+ElementUI.Dialog.props.closeOnClickModal.default=false;
 Vue.prototype.$dayjs = dayjs;
-
 
 Vue.config.productionTip = false
 

@@ -1,0 +1,21 @@
+.search-container {
+    text-align: left;
+  }
+  
+  .search-container .el-form-item{
+    margin-bottom: 5px;
+  }
+  
+  .toolbar{
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  .toolbar > button {
+    margin-right: 10px;
+    font-weight: 700;
+  }
+  
+  .pagination { 
+     margin: 10px auto;
+     text-align: center;
+  }

@@ -16,7 +16,8 @@ class HttpRequest {
   getInsideConfig(){
     const config = {
         baseURL : this.baseURL,
-        Header:{}
+        Header:{},
+        timeout: 2500
     }
     return config
   }
@@ -44,13 +45,15 @@ class HttpRequest {
     // 添加响应拦截器
     interce.interceptors.response.use(function (response) {
       // 对响应数据做点什么
-      if(response.data.code != '0'){
+      if(response.data.code !== 0){
+        const msg =  response.data.message ?? '响应code 异常,请管理员检查api'
         Message({
-          message: response.data.message,
+          message:msg,
           type: 'error'
         });
+        throw new Error(msg);
       }
-      return response;
+      return response
     }, function (error) {
       console.log(error);
       if(error.response.status === 401){
@@ -61,6 +64,7 @@ class HttpRequest {
         router.replace({
           path: '/login'
         })
+        return
       }
       // 对响应错误做点什么
       return Promise.reject(error);

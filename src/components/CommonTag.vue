@@ -24,7 +24,6 @@ export default{
             closeTag:'closeTag'
         }),
         changeMenu(item){
-            console.log('当前页面名'+item.name)
             this.$router.push({name:item.name})
         },
         closeMenu(tag,index){

@@ -1,10 +1,10 @@
 <template>
-    <div>Home 页面</div>
+    <div>FunctionAppLicenses 页面</div>
 </template>
 
 <script>
 export default ({
-    name:'homePage',
+    name:'functionapplicenses',
     data(){
         return {}
     },
