@@ -60,8 +60,9 @@ export default ({
                 type: 'warning'
             }).then(() => {
                 this.$store.commit('clearToken')
-                this.$router.push({ name:'loginPage'})
-            }).catch(() => {
+                this.$router.push({name:'loginPage'})
+            }).catch((err) => {
+               console.log(err)
                return      
             });
       },

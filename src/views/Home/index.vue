@@ -1,5 +1,5 @@
 <template>
-    <div>Home 页面</div>
+    <div v-web-title="管理页面">Home 页面</div>
 </template>
 
 <script>

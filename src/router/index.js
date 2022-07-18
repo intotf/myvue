@@ -11,11 +11,17 @@ var routers = [
         path:'/',
         name:"mainPage",
         component:mainPage,
+        meta:{
+            title:'后台管理系统 1.0'
+        },
         children:[
             {
                 path:'/home',
                 name:'home',
-                component:homePage
+                component:homePage,
+                meta:{
+                    title:'后台管理系统 1.0'
+                }
             },
             {
                 path:'/user',
@@ -40,7 +46,7 @@ var routers = [
             {
                 path:'/functions',
                 name:'functions',
-                component:()=>import('../views/Functions'),
+                component:()=>import('../views/Functions/index.vue'),
                 meta: {
                     title: '功能管理',
                     keepAlive: true, //此组件需要被缓存
@@ -77,7 +83,7 @@ var routers = [
 ];
 
 const router =  new VueRouter({
-    mode:'history',
+    mode:'hash',
     routes:routers
 })
 

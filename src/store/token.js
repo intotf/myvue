@@ -15,7 +15,6 @@ export default {
             state.accountToken = '';
             state.menus = []
             Cookie.remove(tokenKey)
-            Cookie.remove(menusKey)
         },
         getToken(state){
            state.accountToken = this.state.accountToken || Cookie.get(tokenKey)

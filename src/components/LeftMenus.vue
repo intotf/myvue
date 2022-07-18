@@ -3,11 +3,12 @@
       <h3>{{isCollapse ? '后台' : '后台管理系统'}}</h3>
       <el-submenu v-for="item in menus" :index="item.name" :key="item.name">
           <template slot="title">
-            <i class="el-icon-location"></i>
-            <span slot="title">{{item.label}}</span>
+            <i :class="'fa fa-'+ item.class+' fa-lg'"></i> &nbsp; <span slot="title">{{item.label}}</span>
           </template>
           <el-menu-item-group v-for="subItem in item.childre" :key="subItem.name">
-            <el-menu-item :index="subItem.path"  @click="chlickMenu(subItem)">{{subItem.label}}</el-menu-item>
+            <el-menu-item :index="subItem.path"  @click="chlickMenu(subItem)">
+              • {{subItem.label}}
+            </el-menu-item>
           </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -64,7 +65,8 @@
                 itemArray.groupName = item.group
                 itemArray.name = item.path
                 itemArray.label = item.group
-                itemArray.path = '/'+item.path
+                itemArray.path = '/'+item.path,
+                itemArray.class = item.class
             }
             menusArray.push(itemArray);
           })

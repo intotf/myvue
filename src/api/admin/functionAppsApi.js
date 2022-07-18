@@ -9,9 +9,9 @@ export default{
             data: data
         })
     },
-    Create: (data)=>{
+    Create: (data,developerId)=>{
         return axios.request({
-            url:'/api/admin/functionApps',
+            url:'/api/admin/functionApps/'+developerId,
             method:'POST',
             data: data
         })

@@ -60,6 +60,7 @@ export default ({
     padding: 35px 35px 15px 35px;
     border: 1px solid #F0F0F0;
     box-shadow: 0 0 25px #D0D0D0;
+    text-align: center;
 }
 .login_title{
     margin: 0px auto 40px auto;

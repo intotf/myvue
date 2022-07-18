@@ -26,7 +26,7 @@
     <el-table-column type="index" width="50" label="序号" />
     <el-table-column prop="name" label="姓名" sortable width="180" />
     <el-table-column prop="username" label="帐号" sortable />
-    <el-table-column prop="createTime"  label="创建时间" sortable width="150" :formatter="formatterDate" />
+    <el-table-column prop="createTime"  label="创建时间" sortable width="120" :formatter="formatterDate" />
 
      <el-table-column label="操作" width="150">
       <template slot-scope="scope">

@@ -19,3 +19,10 @@
      margin: 10px auto;
      text-align: center;
   }
+
+.word-wrap{
+    word-wrap:break-word;
+    white-space:normal; 
+    word-break:break-all;
+    overflow:auto;
+}
