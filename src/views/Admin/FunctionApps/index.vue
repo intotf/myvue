@@ -3,10 +3,33 @@
   <div class="search-container">
     <el-form :inline="true" :model="formSearch" class="demo-form-inline">
       <el-form-item>
-        <el-input v-model="formSearch.name" placeholder="名称" size="small" autocomplete="on" clearable></el-input>
+        <el-input v-model="formSearch.appName" placeholder="应用名称" size="small" autocomplete="on" clearable></el-input>
+      </el-form-item>
+     
+     <el-form-item>
+        <el-input v-model="formSearch.functionName" placeholder="功能名称" size="small" autocomplete="on" clearable></el-input>
       </el-form-item>
 
       <el-form-item>
+        <el-input v-model="formSearch.developerUsername" placeholder="开发者帐号" size="small" autocomplete="on" clearable></el-input>
+      </el-form-item>
+
+      <el-form-item>
+        <el-input v-model="formSearch.appId" placeholder="appId" size="small" autocomplete="on" clearable></el-input>
+      </el-form-item>
+
+      <el-form-item>
+         <el-select v-model="formSearch.appState" clearable placeholder="状态" size="small">
+          <el-option
+            v-for="item in appStateOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+       <el-form-item>
         <el-button type="primary" @click="onSearch" size="small">查询</el-button>
       </el-form-item>
     </el-form>
@@ -14,14 +37,23 @@
 
   <div class="toolbar">
     <el-button type="text" icon="el-icon-plus" :underline="false" @click="openFormDialog(null)">创建</el-button>
+    <el-button type="text" icon="el-icon-plus" :underline="false" @click="handleDeletes">删除</el-button>
   </div>
   
   <el-table border :data="pageData" style="width: 100%" :default-sort = "{prop: 'createTime', order: 'descending'}" @sort-change="handlerSort">
     <el-table-column type="index" width="80" label="序号" />
-    <el-table-column prop="name" label="名称" sortable />
-    <el-table-column prop="createTime"  label="创建时间" sortable width="150" :formatter="formatterDate" />
-    <el-table-column prop="lastModifyTime"  label="最后更新时间" sortable width="150" :formatter="formatterDate" />
-
+    <el-table-column prop="appName" label="应用名称" sortable />
+    <el-table-column prop="functionName" label="功能名称" sortable />
+    <el-table-column prop="developerUsername" label="开发者帐号" sortable />
+    <el-table-column prop="appId" label="AppId" sortable width="210" />
+    <el-table-column prop="maxLicenseCount" label="最大授权数" sortable />
+    <el-table-column prop="currentLicenseCount" label="当前授权数" sortable />
+    <el-table-column prop="appState" label="状态" width="80" sortable >
+        <template slot-scope="scope">
+          <span :style="scope.row.appState ? '' : 'color:red'">{{scope.row.appState ? '启用' : '禁用'}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column prop="createTime"  label="创建时间" sortable width="120" :formatter="formatterDate" />
      <el-table-column label="操作" width="150">
       <template slot-scope="scope">
         <el-button size="mini" @click="openFormDialog(scope.row)">编辑</el-button>
@@ -43,8 +75,35 @@
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" :before-close="closeFormDialog">
       <el-form :model="formData" :rules="rules" ref="dialogForm">
-        <el-form-item label="名称" :label-width="labelwidth"  prop="name">
-          <el-input v-model="formData.name" autocomplete="off" clearable></el-input>
+       <el-form-item label="应用名称" :label-width="labelwidth" prop="appName">
+          <el-input v-model="formData.appName" autocomplete="off" clearable></el-input>
+        </el-form-item>
+
+        <el-form-item label="最大授权数" :label-width="labelwidth"  prop="maxLicenseCount">
+          <el-input v-model="formData.maxLicenseCount" autocomplete="off" oninput="value=value.replace(/[^\d]/g,'')" clearable></el-input>
+        </el-form-item>
+
+        <el-form-item label="所属开发者" :label-width="labelwidth"  prop="developerId">
+          <el-select v-model="formData.developerId" filterable placeholder="请选择开发者" :disabled="isEdit">
+            <el-option v-for="item in devSelectItem" :key="item.value" :label="item.text" :value="item.value" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="功能" :label-width="labelwidth"  prop="functionId">
+          <el-select v-model="formData.functionId" filterable placeholder="请选择功能" :disabled="isEdit">
+            <el-option v-for="item in funcSelectItem" :key="item.value" :label="item.text" :value="item.value" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="是否审核" :label-width="labelwidth" prop="appState">
+          <el-switch  v-model="formData.appState" />
+        </el-form-item>
+
+        <el-form-item label="AppId" :label-width="labelwidth"  v-if="isEdit" prop="appId">
+         <el-input v-model="formData.appId" autocomplete="off" disabled clearable></el-input>
+        </el-form-item>
+        <el-form-item label="AppSecret" :label-width="labelwidth" v-if="isEdit" prop="appSecret">
+         <el-input v-model="formData.appSecret" autocomplete="off" disabled clearable></el-input>
         </el-form-item>
       </el-form>
 
@@ -57,10 +116,12 @@
 </template>
 
 <script>
-import api from '../../api/admin/functionsApi.js'
+import api from '../../../api/admin/functionAppsApi.js'
+import devApi from '../../../api/admin/developersApi'
+import funcApi from '../../../api/admin/functionsApi'
 import _ from 'lodash'
 export default ({
-    name:'functions',
+    name:'functionapps',
     data(){
         return {
             formSearch: {
@@ -70,17 +131,36 @@ export default ({
               pageSize:10,
               obderby:''
             },
+            devSelectItem:[],
+            funcSelectItem:[],
             multipleSelection: [],
             totalCount:0,
             pageData:[],
             formData: {},
-            dialogTitle:'',
+            appStateOptions:[
+                {
+                  value: true,
+                  label: '启用'
+                }, {
+                  value: false,
+                  label: '禁用'
+                }
+            ],
+            dialogTitle:'用户',
             dialogFormVisible:false,
             labelwidth:'100px',
             rules:{
-                name:[
-                    { required:true, message: "请输入姓名", trigger:"blur" },
-                    { max: 50, message:'名称最大50位',trigger: 'blur' }
+                appName:[
+                    { required:true, message: "请输入应用名称", trigger:"blur" }
+                ],
+                maxLicenseCount:[
+                    { required:true, message: "请输入授权最大数", trigger:"blur" },
+                ],
+                developerId:[
+                  { required:true, message: "请选择开发者", trigger:"blur" },
+                ],
+                functionId:[
+                  { required:true, message: "请选择功能", trigger:"blur" },
                 ]
             }
         }
@@ -160,9 +240,9 @@ export default ({
         }
 
         if(this.isEdit){
-          this.dialogTitle = '编辑功能'
+          this.dialogTitle = '编辑功能应用'
         } else{
-          this.dialogTitle = '创建功能'
+          this.dialogTitle = '创建功能应用'
         }
         this.dialogFormVisible = true
       },
@@ -183,7 +263,7 @@ export default ({
                       this.closeFormDialog()
                   })
                 }else{
-                  api.Create(this.formData).then(res=>{
+                  api.Create(this.formData,this.formData.developerId).then(res=>{
                       this.$message({message:'操作成功',type:'success'})
                       this.onSearch()
                       this.closeFormDialog()
@@ -210,6 +290,14 @@ export default ({
       },
     mounted(){
          this.onSearch()
+
+         devApi.getAll().then(res=>{
+            this.devSelectItem = res.data.data
+         })
+
+         funcApi.getAll().then(res=>{
+            this.funcSelectItem = res.data.data
+         })
     }
 })
 </script>

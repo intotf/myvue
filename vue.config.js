@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   devServer: {
-    proxy: 'http://localhost:5000'
+    proxy: 'http://120.78.226.229:8848'
   },
   chainWebpack: config => {
     config

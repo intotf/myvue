@@ -35,12 +35,19 @@
     <el-table-column prop="appId" label="appId" sortable />
     <el-table-column prop="developerUsername" label="开发者帐号" sortable /> 
     <el-table-column prop="machineId" label="设备标识符" sortable /> 
-    <el-table-column prop="machineFeature" label="设备特征码" min-width="120" :show-overflow-tooltip="true" sortable /> 
-    <el-table-column prop="machineSignature" label="设备特征签名" width="120"> 
+    <el-table-column prop="machineFeature" label="设备特征码" width="180"> 
+        <template slot-scope="scope">
+         <el-tooltip placement="top">
+            <div slot="content" class="word-wrap" style="width:250px;">{{scope.row.machineFeature}}</div>
+            <el-button type="text" class="white-space" style="width:120px;color: #606266;">{{scope.row.machineFeature}}</el-button>
+        </el-tooltip>
+      </template>
+    </el-table-column>
+    <el-table-column prop="machineSignature" label="设备特征签名" width="180"> 
       <template slot-scope="scope">
         <el-tooltip placement="top">
             <div slot="content" class="word-wrap" style="width:250px;">{{scope.row.machineSignature}}</div>
-            <el-button type="text">查看签名</el-button>
+            <el-button type="text" class="white-space" style="width:120px;color: #606266;">{{scope.row.machineSignature}}</el-button>
         </el-tooltip>
       </template>
     </el-table-column>
@@ -61,7 +68,7 @@
 </template>
 
 <script>
-import api from '../../api/admin/functionAppLicensesApi.js'
+import api from '../../../api/admin/functionAppLicensesApi.js'
 import _ from 'lodash'
 export default ({
     name:'functionAppLicenses',

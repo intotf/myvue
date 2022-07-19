@@ -32,7 +32,7 @@
 </style>
 
 <script>
-  import { getAdminMenu } from '../api/tokenApi.js'
+  import api from '../api/tokenApi.js'
   export default {
     data() {
       return {
@@ -48,8 +48,9 @@
       }
     },
     mounted(){
+       this.$store.commit('getUserInfo')
        // 发送 POST 请求
-      getAdminMenu().then(res=>{
+      api.getMenu(this.$store.state.token.userInfo.role).then(res=>{
           const menusArray = [];
           res.data.data.forEach(item => {
             const itemArray = [];

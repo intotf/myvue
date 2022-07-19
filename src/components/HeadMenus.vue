@@ -5,12 +5,12 @@
             <el-button size="mini" plain icon="el-icon-s-home" :underline="false" @click="pushMenu('home')">返回首页</el-button>
         </div>
         <div class="r-content">
-            <el-dropdown>
-                <span class="el-dropdown-link">
-                  <img :src="userHeadImg" class="userIcon">
-                </span>
+            <el-dropdown trigger="click">
+                <el-button type="text" style="color:#ffffff; font-weight:bold;">
+                    {{userInfo.unique_name}} <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-user-solid" @click.native="pushMenu('user')" >个人资料</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-user-solid" @click.native="pushMenu" >个人资料</el-dropdown-item>
                     <el-dropdown-item icon="el-icon-switch-button" divided @click.native="loginOut">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -42,11 +42,11 @@
 </style>
 
 <script>
+
 export default ({
     name:'HeadMenus',
     data() {
         return {
-            userHeadImg: require('../assets/logo.png')
         }
     },
     methods:{
@@ -66,9 +66,28 @@ export default ({
                return      
             });
       },
-      pushMenu(name){
-        this.$router.push({ name:name})
+      pushMenu(){
+        let routerName = ''
+        if(this.userInfo.role === 'Developer'){
+            routerName = 'developers/developer'
+        }else{
+            routerName = 'user'
+        }
+        let routerFind = this.$router.getRoutes().find(item=> item.name === routerName)
+        this.$store.commit('selectMenu',{
+            path:'/'+routerName,
+            name:routerName ,
+            label:routerFind.meta.title,
+            icon:''
+        })
+        this.$router.push({name:routerName})
       }
+    },
+    computed:{
+        userInfo(){
+            this.$store.commit('getUserInfo')
+            return this.$store.state.token.userInfo
+        }
     }
 })
 </script>

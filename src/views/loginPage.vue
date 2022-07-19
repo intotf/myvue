@@ -1,26 +1,43 @@
 <template>
+   
     <el-form :model="form" status-icon :rules="rules" ref="form" class="login-container">
-        <h3 class="login_title">系统登录</h3>
-        <el-form-item label="用户名" label-width="80px" prop="username" class="username">
-            <el-input type="input" v-model="form.username" autocomplete="off" placeholder="请输入登录名" />
-         </el-form-item>
+         <el-tabs v-model="role" @tab-click="handleClick">
+            <el-tab-pane label="系统管理员登录" name="admin" class="loginTabs">
+                <el-form-item label="用户名" label-width="80px" prop="username" class="username">
+                    <el-input type="input" v-model="form.username" autocomplete="off" placeholder="请输入登录名" />
+                </el-form-item>
 
-        <el-form-item label="密码" label-width="80px" prop="password">
-            <el-input type="password" v-model="form.password" autocomplete="off" placeholder="请输入密码" />
-         </el-form-item>
-        
+                <el-form-item label="密码" label-width="80px" prop="password">
+                    <el-input type="password" v-model="form.password" autocomplete="off" placeholder="请输入密码" />
+                </el-form-item>
+            </el-tab-pane>
+
+            <el-tab-pane label="开发者登录" name="developer" class="loginTabs">
+                <el-form-item label="用户名" label-width="80px" prop="username" class="username">
+                    <el-input type="input" v-model="form.username" autocomplete="off" placeholder="请输入登录名" />
+                </el-form-item>
+
+                <el-form-item label="密码" label-width="80px" prop="password">
+                    <el-input type="password" v-model="form.password" autocomplete="off" placeholder="请输入密码" />
+                </el-form-item>
+            </el-tab-pane>
+        </el-tabs>
+
         <el-form-item class="login_submit"> 
             <el-button type="primary" @click="login" class="login_submit">登录</el-button>
         </el-form-item>
     </el-form>
+
+    
 </template>
 
 <script>
-import { getAdminToken } from '../api/tokenApi.js'
+import api from '../api/tokenApi.js'
 export default ({
     name:'loginPage',
     data() {
         return {
+            role:'admin',
             form :{
             },
             rules:{
@@ -39,12 +56,16 @@ export default ({
             this.$refs['form'].validate((valid) => {
                 if (valid) {
                     // 发送 POST 请求
-                    getAdminToken(this.form).then(res=>{
+                    api.getToken(this.form,this.role).then(res=>{
                         this.$store.commit('setToken',res.data.data.access_token)
                         this.$router.push({name:'home'})
                     })
                 }
             });
+       },
+       handleClick(tab, event) 
+       {
+            this.role = tab.name
        }
     }
 })
@@ -52,6 +73,9 @@ export default ({
 
 
 <style lang="less" scoped>
+.loginTabs{
+     padding-top: 15px;
+}
 .login-container {
     border-radius: 15px;
     background-clip: padding-box;

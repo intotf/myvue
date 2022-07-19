@@ -26,7 +26,7 @@ var routers = [
             {
                 path:'/user',
                 name:'user',
-                component: ()=> import('../views/User'),
+                component: ()=> import('../views/Admin/User'),
                 meta: {
                     title: '管理员',
                     keepAlive: true, //此组件需要被缓存
@@ -36,7 +36,7 @@ var routers = [
             {
                 path:'/developers',
                 name:'developers',
-                component:()=>import('../views/Developers'),
+                component:()=>import('../views/Admin/Developers'),
                 meta: {
                     title: '开发者',
                     keepAlive: true, //此组件需要被缓存
@@ -46,7 +46,7 @@ var routers = [
             {
                 path:'/functions',
                 name:'functions',
-                component:()=>import('../views/Functions/index.vue'),
+                component:()=>import('../views/Admin/Functions/index.vue'),
                 meta: {
                     title: '功能管理',
                     keepAlive: true, //此组件需要被缓存
@@ -56,7 +56,7 @@ var routers = [
             {
                 path:'/functionapps',
                 name:'functionapps',
-                component:()=>import('../views/FunctionApps'),
+                component:()=>import('../views/Admin/FunctionApps'),
                 meta: {
                     title: '应用管理',
                     keepAlive: true, //此组件需要被缓存
@@ -66,9 +66,39 @@ var routers = [
             {
                 path:'/functionapplicenses',
                 name:'functionapplicenses',
-                component:()=>import('../views/FunctionAppLicenses'),
+                component:()=>import('../views/Admin/FunctionAppLicenses'),
                 meta: {
                     title: '授权记录',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
+            {
+                path:'/developers/developer',
+                name:'developers/developer',
+                component:()=>import('../views/Developers/Developer'),
+                meta: {
+                    title: '个人资料',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
+            {
+                path:'/developers/functionAppLicenses',
+                name:'developers/functionAppLicenses',
+                component:()=>import('../views/Developers/FunctionAppLicenses'),
+                meta: {
+                    title: '应用授权记录',
+                    keepAlive: true, //此组件需要被缓存
+                    isBack:false//用于判断上一个页面是哪个
+                }
+            },
+            {
+                path:'/developers/functionApps',
+                name:'developers/functionApps',
+                component:()=>import('../views/Developers/FunctionApps'),
+                meta: {
+                    title: '功能应用',
                     keepAlive: true, //此组件需要被缓存
                     isBack:false//用于判断上一个页面是哪个
                 }

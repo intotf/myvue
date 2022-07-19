@@ -3,14 +3,18 @@
   <div class="search-container">
     <el-form :inline="true" :model="formSearch" class="demo-form-inline">
       <el-form-item>
-        <el-input v-model="formSearch.name" placeholder="姓名" size="small" autocomplete="on" clearable></el-input>
+        <el-input v-model="formSearch.appName" placeholder="应用名称" size="small" autocomplete="on" clearable></el-input>
       </el-form-item>
      
      <el-form-item>
-        <el-input v-model="formSearch.username" placeholder="帐号" size="small" autocomplete="on" clearable></el-input>
+        <el-input v-model="formSearch.functionName" placeholder="功能名称" size="small" autocomplete="on" clearable></el-input>
       </el-form-item>
 
       <el-form-item>
+        <el-input v-model="formSearch.appId" placeholder="appId" size="small" autocomplete="on" clearable></el-input>
+      </el-form-item>
+
+       <el-form-item>
         <el-button type="primary" @click="onSearch" size="small">查询</el-button>
       </el-form-item>
     </el-form>
@@ -18,16 +22,21 @@
 
   <div class="toolbar">
     <el-button type="text" icon="el-icon-plus" :underline="false" @click="openFormDialog(null)">创建</el-button>
-    <el-button type="text" icon="el-icon-plus" :underline="false" @click="handleDeletes">删除</el-button>
   </div>
   
-  <el-table border :data="pageData" style="width: 100%" :default-sort = "{prop: 'createTime', order: 'descending'}" @sort-change="handlerSort" @selection-change="handleSelectionChange">
-    <el-table-column type="selection" width="55" />
-    <el-table-column type="index" width="50" label="序号" />
-    <el-table-column prop="name" label="姓名" sortable width="180" />
-    <el-table-column prop="username" label="帐号" sortable />
+  <el-table border :data="pageData" style="width: 100%" :default-sort = "{prop: 'createTime', order: 'descending'}" @sort-change="handlerSort">
+    <el-table-column type="index" width="80" label="序号" />
+    <el-table-column prop="appName" label="应用名称" sortable />
+    <el-table-column prop="functionName" label="功能名称" sortable />
+    <el-table-column prop="appId" label="AppId" sortable width="210" />
+    <el-table-column prop="maxLicenseCount" label="最大授权数" sortable />
+    <el-table-column prop="currentLicenseCount" label="当前授权数" sortable />
+    <el-table-column prop="appState" label="状态" width="80" sortable >
+        <template slot-scope="scope">
+          <span :style="scope.row.appState ? '' : 'color:red'">{{scope.row.appState ? '启用' : '禁用'}}</span>
+      </template>
+    </el-table-column>
     <el-table-column prop="createTime"  label="创建时间" sortable width="120" :formatter="formatterDate" />
-
      <el-table-column label="操作" width="150">
       <template slot-scope="scope">
         <el-button size="mini" @click="openFormDialog(scope.row)">编辑</el-button>
@@ -49,16 +58,21 @@
 
     <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" :before-close="closeFormDialog">
       <el-form :model="formData" :rules="rules" ref="dialogForm">
-       <el-form-item label="帐号" :label-width="labelwidth" prop="username">
-          <el-input v-model="formData.username" autocomplete="off" :disabled="isEdit" clearable></el-input>
+       <el-form-item label="应用名称" :label-width="labelwidth" prop="appName">
+          <el-input v-model="formData.appName" autocomplete="off" clearable></el-input>
         </el-form-item>
 
-        <el-form-item label="姓名" :label-width="labelwidth"  prop="name">
-          <el-input v-model="formData.name" autocomplete="off" clearable></el-input>
+        <el-form-item label="功能" :label-width="labelwidth"  prop="functionId">
+          <el-select v-model="formData.functionId" filterable placeholder="请选择功能" :disabled="isEdit">
+            <el-option v-for="item in funcSelectItem" :key="item.value" :label="item.text" :value="item.value" />
+          </el-select>
         </el-form-item>
-
-        <el-form-item label="登录密码" :label-width="labelwidth" prop="password" :rules="isEdit ? rules.updatepassword : rules.password">
-          <el-input v-model="formData.password" type="password" autocomplete="off" clearable></el-input>
+        
+        <el-form-item label="AppId" :label-width="labelwidth"  v-if="isEdit" prop="appId">
+         <el-input v-model="formData.appId" autocomplete="off" disabled clearable></el-input>
+        </el-form-item>
+        <el-form-item label="AppSecret" :label-width="labelwidth" v-if="isEdit" prop="appSecret">
+         <el-input v-model="formData.appSecret" autocomplete="off" disabled clearable></el-input>
         </el-form-item>
       </el-form>
 
@@ -71,10 +85,10 @@
 </template>
 
 <script>
-import api from '../../api/admin/userinfosApi.js'
+import api from '../../../api/developers/functionAppsApi.js'
 import _ from 'lodash'
 export default ({
-    name:'user',
+    name:'functionapps',
     data(){
         return {
             formSearch: {
@@ -84,7 +98,7 @@ export default ({
               pageSize:10,
               obderby:''
             },
-            multipleSelection: [],
+            funcSelectItem:[],
             totalCount:0,
             pageData:[],
             formData: {},
@@ -92,20 +106,14 @@ export default ({
             dialogFormVisible:false,
             labelwidth:'100px',
             rules:{
-                name:[
-                    { required:true, message: "请输入姓名", trigger:"blur" }
+                appName:[
+                    { required:true, message: "请输入应用名称", trigger:"blur" }
                 ],
-                username:[
-                    { required:true, message: "请输入登录名", trigger:"blur" },
-                    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                maxLicenseCount:[
+                    { required:true, message: "请输入授权最大数", trigger:"blur" },
                 ],
-                password:[
-                  { required:true, message: "请输入登录密码", trigger:"blur" },
-                  { min: 6, message:'登录密码至少6位数',trigger: 'blur' }
-                ],
-                updatepassword:[
-                  { required:false, message: "请输入登录密码", trigger:"blur" },
-                  { min: 6, message:'密码至少6位数',trigger: 'blur' }
+                functionId:[
+                  { required:true, message: "请选择功能", trigger:"blur" },
                 ]
             }
         }
@@ -121,35 +129,6 @@ export default ({
       },
       handleSelectionChange(val){
         this.multipleSelection = val;
-      },
-      //批量删除数据
-      handleDeletes(){
-          if(this.multipleSelection.length <= 0){
-               this.$message({
-                message:'请选择数据',
-                type: 'error'
-              });
-              return
-          }
-          let counter = 0
-          this.$confirm('确定删除当前选中的所有记录', '删除提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-                return new Promise((resolve, reject)=>{
-                  this.multipleSelection.forEach(async(item)=>{
-                    await api.Delete(item.id).then(res=>{
-                        counter++
-                        if (counter === this.multipleSelection.length){ 
-                          this.onSearch()
-                        }
-                    })
-                  })
-                })
-            }).catch(() => {
-                return      
-          });
       },
       handlerSort(column){
         if(column.order){
@@ -185,9 +164,9 @@ export default ({
         }
 
         if(this.isEdit){
-          this.dialogTitle = '编辑用户'
+          this.dialogTitle = '编辑功能应用'
         } else{
-          this.dialogTitle = '创建用户'
+          this.dialogTitle = '创建功能应用'
         }
         this.dialogFormVisible = true
       },
@@ -208,7 +187,7 @@ export default ({
                       this.closeFormDialog()
                   })
                 }else{
-                  api.Create(this.formData).then(res=>{
+                  api.Create(this.formData,this.formData.developerId).then(res=>{
                       this.$message({message:'操作成功',type:'success'})
                       this.onSearch()
                       this.closeFormDialog()
@@ -235,6 +214,9 @@ export default ({
       },
     mounted(){
          this.onSearch()
+         api.GetFunctionsAll().then(res=>{
+            this.funcSelectItem = res.data.data
+         })
     }
 })
 </script>

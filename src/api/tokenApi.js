@@ -1,18 +1,17 @@
 import axios from "./axios";
 
-export const getAdminToken = (params)=>{
-    return axios.request({
-        url:'/api/anonymous/tokens/admin',
-        method:'POST',
-        data:params
-    })
+export default {
+    getToken: (params,role)=>{
+        return axios.request({
+            url:'/api/anonymous/tokens/'+role,
+            method:'POST',
+            data:params
+        })
+    },
+    getMenu : (role)=>{
+        return axios.request({
+            url: role +'Menus.json',
+            method:'GET'
+        })
+    }
 }
-
-export const getAdminMenu = (params)=>{
-    return axios.request({
-        url:'/menus.json',
-        method:'GET',
-        data:params
-    })
-}
-
