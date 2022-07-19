@@ -24,5 +24,11 @@
     word-wrap:break-word;
     white-space:normal; 
     word-break:break-all;
-    overflow:auto;
+    overflow:hidden;
+}
+
+.white-space {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
