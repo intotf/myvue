@@ -73,6 +73,7 @@ var routers = [
                     isBack:false//用于判断上一个页面是哪个
                 }
             },
+            
             {
                 path:'/developers/developer',
                 name:'developers/developer',

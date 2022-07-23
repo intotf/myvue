@@ -119,7 +119,6 @@
 import api from '../../../api/admin/functionAppsApi.js'
 import devApi from '../../../api/admin/developersApi'
 import funcApi from '../../../api/admin/functionsApi'
-import _ from 'lodash'
 export default ({
     name:'functionapps',
     data(){
@@ -235,7 +234,7 @@ export default ({
       //打开创建编辑窗口
       openFormDialog(row){
         if(row !== null){
-          this.formData = _.cloneDeep(row)
+          this.formData = Object.assign({},row)
           this.formData.password = ''
         }
 

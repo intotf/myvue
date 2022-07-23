@@ -72,7 +72,6 @@
 
 <script>
 import api from '../../../api/admin/userinfosApi.js'
-import _ from 'lodash'
 export default ({
     name:'user',
     data(){
@@ -180,7 +179,9 @@ export default ({
       //打开创建编辑窗口
       openFormDialog(row){
         if(row !== null){
-          this.formData = _.cloneDeep(row)
+          console.log(row)
+          this.formData = Object.assign({},row)
+          console.log(Object.assign({},row))
           this.formData.password = ''
         }
 
